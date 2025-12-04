@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { UserProfile, Memory, Recommendation, DailyBriefing, ActionItem, ChatMessage } from '../types';
 import { useAuth } from './AuthContext';
-import { generateDailyBriefing, performAiAction } from '../services/geminiService';
+// import { generateDailyBriefing, performAiAction } from '../services/geminiService';
 import { sendNotification, simulateEmailDispatch } from '../services/notificationService';
 
 interface StoreContextType {
