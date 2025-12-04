@@ -1,0 +1,7 @@
+{
+  "name": "Continuum",
+  "description": "An intelligent memory platform that builds a living user profile from your inputs and provides proactive, contextual recommendations.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
