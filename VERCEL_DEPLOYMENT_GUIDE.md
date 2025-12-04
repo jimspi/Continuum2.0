@@ -52,15 +52,19 @@ Vercel will automatically add these environment variables to your project:
 
 ### Step 5: Add OpenAI API Key
 
+**IMPORTANT:** Environment variables must be added through the Vercel dashboard, NOT in vercel.json.
+
 1. Get your OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys)
 2. In Vercel project, go to **"Settings"** → **"Environment Variables"**
-3. Add the following variable:
+3. Click **"Add New"** and add:
 
 ```
 Name: OPENAI_API_KEY
 Value: sk-proj-YOUR_ACTUAL_API_KEY_HERE
-Environment: Production, Preview, Development
+Environments: ✓ Production  ✓ Preview  ✓ Development (check all three)
 ```
+
+4. Click **"Save"**
 
 ### Step 6: Add Database Initialization Token (Optional but Recommended)
 
