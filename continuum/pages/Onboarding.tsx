@@ -37,7 +37,7 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
       updateUser(formData.name);
 
       // Call backend API to create profile
-      const result = await profileAPI.create(user.userId, formData);
+      const result = await profileAPI.create(user.id, formData);
 
       // Batch updates
       updateProfile(result.profile);
