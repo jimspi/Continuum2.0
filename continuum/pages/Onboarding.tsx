@@ -2,16 +2,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
-import { createInitialProfile } from '../services/geminiService';
+import { profileAPI } from '../src/services/apiService';
 import { Button, Card, Input, Textarea } from '../components/UI';
 import { Logo } from '../components/Logo';
-import { ArrowRight, Loader2, Sparkles, MapPin, User as UserIcon, LogOut } from 'lucide-react';
+import { ArrowRight, Loader2, Sparkles, MapPin, User as UserIcon, LogOut, AlertCircle } from 'lucide-react';
 
 export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const { user, updateUser, signOut } = useAuth();
   const { updateProfile, setRecommendations } = useStore();
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,19 +30,23 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
   const handleSubmit = async () => {
     if (!user) return;
     setIsProcessing(true);
+    setError(null);
+
     try {
       // Update auth context name immediately for UI responsiveness
       updateUser(formData.name);
-      
-      const { profile, recommendations } = await createInitialProfile(user.id, formData);
-      
+
+      // Call backend API to create profile
+      const result = await profileAPI.create(user.userId, formData);
+
       // Batch updates
-      updateProfile(profile);
-      setRecommendations(recommendations);
-      
+      updateProfile(result.profile);
+      setRecommendations(result.recommendations);
+
       onComplete();
-    } catch (e) {
+    } catch (e: any) {
       console.error("Onboarding failed", e);
+      setError(e.message || 'Failed to create profile. Please try again.');
       setIsProcessing(false);
     }
   };
@@ -75,17 +80,35 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
         </div>
 
         <Card className="p-8 shadow-lg">
-          
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-900">Setup Failed</p>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+                <Button
+                  variant="ghost"
+                  className="mt-2 text-red-600 hover:text-red-700 p-0 h-auto"
+                  onClick={() => setError(null)}
+                >
+                  Try Again
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Step 1: Personal Details */}
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                <h2 className="text-lg font-semibold text-gray-900">First, the basics</h2>
-               
+
                <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1">What should we call you?</label>
                 <div className="relative">
                   <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <Input 
+                  <Input
                     autoFocus
                     placeholder="Full Name"
                     className="pl-9"
@@ -100,7 +123,7 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
                 <p className="text-xs text-gray-500 mb-2">Helps with local recommendations (weather, events).</p>
                 <div className="relative">
                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                   <Input 
+                   <Input
                     placeholder="e.g. Seattle, WA or London, UK"
                     className="pl-9"
                     value={formData.location}
@@ -120,7 +143,7 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1">What do you do?</label>
                 <p className="text-xs text-gray-500 mb-2">Role, Occupation, or Primary Focus</p>
-                <Input 
+                <Input
                   autoFocus
                   placeholder="e.g. Product Designer, Student, Entrepreneur"
                   value={formData.role}
@@ -138,7 +161,7 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1">What are you working towards?</label>
                 <p className="text-xs text-gray-500 mb-2">Current major goals or projects for the next 3 months.</p>
-                <Textarea 
+                <Textarea
                   autoFocus
                   placeholder="e.g. Launching a SaaS, running a marathon, learning Spanish"
                   value={formData.goals}
@@ -156,7 +179,7 @@ export const Onboarding: React.FC<{ onComplete: () => void }> = ({ onComplete })
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-1">What fascinates you?</label>
                 <p className="text-xs text-gray-500 mb-2">Hobbies, topics, or curiosities.</p>
-                <Textarea 
+                <Textarea
                   autoFocus
                   placeholder="e.g. AI agents, mid-century modern furniture, hiking trails"
                   value={formData.interests}
