@@ -5,6 +5,12 @@
   "framework": null,
   "devCommand": "cd continuum && npm run dev",
   "installCommand": "npm install && cd continuum && npm install",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -16,16 +22,6 @@
     {
       "src": "/(.*)",
       "dest": "/index.html"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ],
   "functions": {

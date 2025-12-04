@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
+      publicDir: 'public',
       define: {
         // API URL for backend - empty string means use relative URLs (production)
         'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '')
