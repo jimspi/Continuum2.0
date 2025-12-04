@@ -41,7 +41,7 @@ async function apiCall<T>(
 export const authAPI = {
   signIn: async (email: string, name?: string) => {
     return apiCall<{ user: { userId: string; email: string; name: string } }>(
-      '/api/auth/signin',
+      '/api/auth',
       {
         method: 'POST',
         body: JSON.stringify({ email, name }),
@@ -53,7 +53,7 @@ export const authAPI = {
 // Profile API
 export const profileAPI = {
   get: async (userId: string) => {
-    return apiCall<{ profile: any }>(`/api/profile/get?userId=${userId}`);
+    return apiCall<{ profile: any }>(`/api/profile?userId=${userId}`);
   },
 
   create: async (userId: string, data: {
@@ -64,16 +64,16 @@ export const profileAPI = {
     interests: string;
   }) => {
     return apiCall<{ profile: any; recommendations: any[] }>(
-      '/api/profile/create',
+      '/api/profile',
       {
         method: 'POST',
-        body: JSON.stringify({ userId, ...data }),
+        body: JSON.stringify({ userId, action: 'create', ...data }),
       }
     );
   },
 
   update: async (userId: string, profile: any) => {
-    return apiCall<{ profile: any }>('/api/profile/update', {
+    return apiCall<{ profile: any }>('/api/profile', {
       method: 'POST',
       body: JSON.stringify({ userId, profile }),
     });
@@ -83,7 +83,7 @@ export const profileAPI = {
 // Memories API
 export const memoriesAPI = {
   list: async (userId: string) => {
-    return apiCall<{ memories: any[] }>(`/api/memories/list?userId=${userId}`);
+    return apiCall<{ memories: any[] }>(`/api/memories?userId=${userId}`);
   },
 
   create: async (userId: string, memory: {
@@ -91,7 +91,7 @@ export const memoriesAPI = {
     type: 'text' | 'file' | 'audio';
     timestamp?: string;
   }) => {
-    return apiCall<{ memory: any }>('/api/memories/create', {
+    return apiCall<{ memory: any }>('/api/memories', {
       method: 'POST',
       body: JSON.stringify({
         userId,
@@ -103,7 +103,7 @@ export const memoriesAPI = {
 
   delete: async (userId: string, memoryId: string) => {
     return apiCall<{ success: boolean }>(
-      `/api/memories/delete?userId=${userId}&memoryId=${memoryId}`,
+      `/api/memories?userId=${userId}&memoryId=${memoryId}`,
       { method: 'DELETE' }
     );
   },
@@ -113,27 +113,27 @@ export const memoriesAPI = {
 export const recommendationsAPI = {
   list: async (userId: string) => {
     return apiCall<{ recommendations: any[] }>(
-      `/api/recommendations/list?userId=${userId}`
+      `/api/recommendations?userId=${userId}`
     );
   },
 
   create: async (userId: string, recommendation: any) => {
-    return apiCall<{ recommendation: any }>('/api/recommendations/create', {
+    return apiCall<{ recommendation: any }>('/api/recommendations', {
       method: 'POST',
       body: JSON.stringify({ userId, recommendation }),
     });
   },
 
   update: async (userId: string, recId: string, updates: any) => {
-    return apiCall<{ recommendation: any }>('/api/recommendations/update', {
+    return apiCall<{ recommendation: any }>('/api/recommendations', {
       method: 'POST',
-      body: JSON.stringify({ userId, recId, updates }),
+      body: JSON.stringify({ userId, action: 'update', recId, updates }),
     });
   },
 
   delete: async (userId: string, recId: string) => {
     return apiCall<{ success: boolean }>(
-      `/api/recommendations/delete?userId=${userId}&recId=${recId}`,
+      `/api/recommendations?userId=${userId}&recId=${recId}`,
       { method: 'DELETE' }
     );
   },
@@ -143,12 +143,12 @@ export const recommendationsAPI = {
 export const briefingAPI = {
   get: async (userId: string, date: string) => {
     return apiCall<{ briefing: any }>(
-      `/api/briefing/get?userId=${userId}&date=${date}`
+      `/api/briefing?userId=${userId}&date=${date}`
     );
   },
 
   generate: async (userId: string, date: string) => {
-    return apiCall<{ briefing: any }>('/api/briefing/generate', {
+    return apiCall<{ briefing: any }>('/api/briefing', {
       method: 'POST',
       body: JSON.stringify({ userId, date }),
     });
@@ -158,11 +158,11 @@ export const briefingAPI = {
 // Chat API
 export const chatAPI = {
   getHistory: async (userId: string) => {
-    return apiCall<{ messages: any[] }>(`/api/chat/history?userId=${userId}`);
+    return apiCall<{ messages: any[] }>(`/api/chat?userId=${userId}`);
   },
 
   sendMessage: async (userId: string, message: string) => {
-    return apiCall<{ message: any }>('/api/chat/message', {
+    return apiCall<{ message: any }>('/api/chat', {
       method: 'POST',
       body: JSON.stringify({ userId, message }),
     });
@@ -170,7 +170,7 @@ export const chatAPI = {
 
   clearHistory: async (userId: string) => {
     return apiCall<{ success: boolean }>(
-      `/api/chat/clear?userId=${userId}`,
+      `/api/chat?userId=${userId}`,
       { method: 'DELETE' }
     );
   },
@@ -179,7 +179,7 @@ export const chatAPI = {
 // AI Actions API
 export const aiAPI = {
   performAction: async (userId: string, action: string, prompt: string) => {
-    return apiCall<{ result: string }>('/api/ai/action', {
+    return apiCall<{ result: string }>('/api/ai', {
       method: 'POST',
       body: JSON.stringify({ userId, action, prompt }),
     });
