@@ -1,0 +1,22 @@
+{
+  "name": "continuum",
+  "private": true,
+  "version": "2.0.0",
+  "description": "An intelligent memory platform with backend storage",
+  "type": "module",
+  "scripts": {
+    "dev": "cd continuum && npm run dev",
+    "build": "cd continuum && npm run build",
+    "preview": "cd continuum && npm run preview",
+    "postinstall": "cd continuum && npm install"
+  },
+  "dependencies": {
+    "@vercel/node": "^3.0.12",
+    "@vercel/postgres": "^0.5.1",
+    "openai": "^4.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2"
+  }
+}
