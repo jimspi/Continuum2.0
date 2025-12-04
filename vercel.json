@@ -5,11 +5,6 @@
   "framework": null,
   "devCommand": "cd continuum && npm run dev",
   "installCommand": "npm install && cd continuum && npm install",
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/:path*",
