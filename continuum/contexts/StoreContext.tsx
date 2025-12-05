@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { UserProfile, Memory, Recommendation, DailyBriefing, ActionItem, ChatMessage } from '../types';
 import { useAuth } from './AuthContext';
-import { generateDailyBriefing, performAiAction } from '../services/geminiService';
+// import { generateDailyBriefing, performAiAction } from '../services/geminiService';
 import { sendNotification, simulateEmailDispatch } from '../services/notificationService';
 
 interface StoreContextType {
@@ -164,19 +164,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const refreshDailyBriefing = async (force = false) => {
     if (!profile || !user) return;
-    
+
     const today = new Date().toISOString().split('T')[0];
     if (!force && dailyBriefing?.date === today) return;
 
     try {
-      const briefing = await generateDailyBriefing(profile, memories);
-      setDailyBriefing(briefing);
-      // Also update the main recommendations list with the top picks from the briefing
-      if (briefing.topRecommendations.length > 0) {
-        saveRecommendations(briefing.topRecommendations);
-      }
-      localStorage.setItem(`continuum_briefing_${user.id}`, JSON.stringify(briefing));
-      return briefing; // Return for notification use
+      // TODO: Replace with backend API call
+      // const briefing = await briefingAPI.generate(user.id, today);
+      console.log("Daily briefing generation temporarily disabled - backend not configured");
+      return undefined;
     } catch (e) {
       console.error("Failed to generate briefing", e);
     }
@@ -184,7 +180,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const executeAiAction = async (action: ActionItem): Promise<string> => {
     if (!profile) return "Profile not found.";
-    return await performAiAction(action, profile);
+    // TODO: Replace with backend API call
+    // return await aiAPI.performAction(user.id, action.aiActionType, action.label);
+    return "AI actions temporarily disabled - backend not configured";
   };
   
   const toggleBriefingAction = (actionId: string) => {
